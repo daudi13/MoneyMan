@@ -124,6 +124,13 @@ nav {
     overflow: scroll;
 }
 
+.movements__row {
+    padding: 2.25rem 4rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
 .movements__type {
     font-size: 1.1rem;
     text-transform: uppercase;
@@ -147,6 +154,11 @@ nav {
 
 .movements__type--withdrawal {
     background-image: linear-gradient(to top left, #e52a5a, #ff585f);
+}
+
+.movements__value {
+    font-size: 1.7rem;
+    margin-left: auto;
 }
 
 /* SUMMARY */
