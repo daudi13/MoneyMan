@@ -125,10 +125,24 @@ createWithdrawals(accounts);
 console.log(accounts)
 
 //USING THE REDUCE METHOD(snowball)
-
+//addition
 
 const accBalance = movements.reduce((acc, currentValue) => {
     return acc + currentValue;
-}, 0);
+}, 0); // the 0 indicates the value of the initial value
+
 
 console.log(accBalance)
+
+const calcPrintBalance = function (acc) {
+    labelBalance.textContent = `$${acc.movements.reduce((acc, cur) => acc + cur, 0)
+    } `
+}
+
+calcPrintBalance(account2);
+
+//getting the maximum value 
+
+const maxVal = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0])
+
+console.log(maxVal)
