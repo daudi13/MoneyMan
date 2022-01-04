@@ -75,6 +75,7 @@ const displayMessage = function (movements) {
     })
 }
 
+//USING THE MAP METHODS
 
 const userName = 'Samuel Mbure';
 
@@ -94,7 +95,7 @@ createUserName(accounts);
 console.log(accounts);
 
 
-//using the filter method 
+//USING THE FILTER METHOD
 // creating the deposit arrays
 const createDeposits = function (accs) {
     accs.forEach(acc => {
@@ -122,3 +123,12 @@ const createWithdrawals = function(accs) {
 
 createWithdrawals(accounts);
 console.log(accounts)
+
+//USING THE REDUCE METHOD(snowball)
+
+
+const accBalance = movements.reduce((acc, currentValue) => {
+    return acc + currentValue;
+}, 0);
+
+console.log(accBalance)
