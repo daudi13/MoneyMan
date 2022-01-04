@@ -95,10 +95,10 @@ console.log(accounts);
 
 
 //using the filter method 
-
+// creating the deposit arrays
 const createDeposits = function (accs) {
     accs.forEach(acc => {
-        acc.depArray = acc.movements.filter(deps => deps > 0)
+        acc.deposits = acc.movements.filter(deps => deps > 0)
     })
 }
 
@@ -108,6 +108,17 @@ const deposits = movements.filter(mov => {
     return mov > 0
 })
 
+
 createDeposits(accounts)
 
 console.log(accounts);
+
+//creating the withdrawal arrays
+
+const createWithdrawals = function(accs) {
+
+    accs.forEach(acc => acc.withdrawals = acc.movements.filter( movs => movs < 0))
+}
+
+createWithdrawals(accounts);
+console.log(accounts)
