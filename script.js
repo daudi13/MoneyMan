@@ -174,7 +174,7 @@ const calcdisplaySummary = function (movements) {
 
 	//interest 
 
-	const interest = movements.filter(mov => mov > 0).map(mov => mov * 1.2/100).reduce((acc, val) => acc + val, 0);
+	const interest = movements.filter(mov => mov > 0).map(mov => mov * 1.2/100).filter(interest => interest >= 1).reduce((acc, val) => acc + val, 0);
 	labelSumInterest.textContent = `${interest}`
 }
 
