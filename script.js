@@ -74,6 +74,9 @@ const displayMessage = function (movements) {
         containerMovements.insertAdjacentHTML('afterbegin',   htmlTemplate)
     })
 }
+//create eurUSD rate 
+
+const eurUSD = 1.14
 
 //USING THE MAP METHODS
 
@@ -146,3 +149,52 @@ calcPrintBalance(account2);
 const maxVal = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0])
 
 console.log(maxVal)
+
+//getting the bank balance in usd
+
+
+const bankBalnceUSD = function (accs) {
+	accs.forEach(acc => acc.bankBalnceUSD = acc.movements.map(mov => mov * eurUSD).filter(mov => mov > 0).reduce((acc, val) => acc + val), 0);
+}
+
+bankBalnceUSD(accounts);
+console.log(accounts)
+
+
+//display the incomes 
+
+const calcdisplaySummary = function (movements) {
+	//income display
+	const incomes = movements.filter(mov => mov > 0).reduce((acc, val) => acc + val, 0);
+	labelSumIn.textContent = `${incomes}€`;
+
+	//outcome display 
+	const outcomes = movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
+	labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+
+	//interest 
+
+	const interest = movements.filter(mov => mov > 0).map(mov => mov * 1.2/100).reduce((acc, val) => acc + val, 0);
+	labelSumInterest.textContent = `${interest}`
+}
+
+calcdisplaySummary(account1.movements);
+
+// //display the outgoing
+
+// const calcdisplayOut = function (movements) {
+// 	const outcomes = movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
+// 	labelSumOut.textContent = `${outcomes}€`;
+// }
+
+// calcdisplayOut(account1.movements);
+
+// //display the interest 
+
+// const calcdisplayInterst = function (acc) {
+// 	const interest = acc.movements.filter(mov => mov > 0).reduce((acc, val) => acc + val,0) - acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0) * acc.interestRate;
+
+// 	labelSumInterest.textContent = `${interest}€`;
+// }
+
+// calcdisplayInterst(account4)
