@@ -59,7 +59,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMessage = function (movements) {
+const displayMovements = function (movements) {
     containerMovements.innerHTML = ' ';
 
     movements.forEach((movement, i) => {
@@ -94,9 +94,7 @@ const createUserName = function (accs) {
 
 }
 
-createUserName(accounts);
-console.log(accounts);
-
+createUserName(accounts)
 
 //USING THE FILTER METHOD
 // creating the deposit arrays
@@ -113,19 +111,12 @@ const deposits = movements.filter(mov => {
 })
 
 
-createDeposits(accounts)
-
-console.log(accounts);
-
 //creating the withdrawal arrays
 
 const createWithdrawals = function(accs) {
 
     accs.forEach(acc => acc.withdrawals = acc.movements.filter( movs => movs < 0))
 }
-
-createWithdrawals(accounts);
-console.log(accounts)
 
 //USING THE REDUCE METHOD(snowball)
 //addition
@@ -137,12 +128,12 @@ const accBalance = movements.reduce((acc, currentValue) => {
 
 console.log(accBalance)
 
-const calcPrintBalance = function (acc) {
-    labelBalance.textContent = `$${acc.movements.reduce((acc, cur) => acc + cur, 0)
+const calcPrintBalance = function (movements) {
+    labelBalance.textContent = `$${movements.reduce((acc, cur) => acc + cur, 0)
     } `
 }
 
-calcPrintBalance(account2);
+
 
 //getting the maximum value 
 
@@ -156,9 +147,6 @@ console.log(maxVal)
 const bankBalnceUSD = function (accs) {
 	accs.forEach(acc => acc.bankBalnceUSD = acc.movements.map(mov => mov * eurUSD).filter(mov => mov > 0).reduce((acc, val) => acc + val), 0);
 }
-
-bankBalnceUSD(accounts);
-console.log(accounts)
 
 
 //display the incomes 
@@ -178,7 +166,6 @@ const calcdisplaySummary = function (movements) {
 	labelSumInterest.textContent = `${interest}`
 }
 
-calcdisplaySummary(account1.movements);
 
 // //display the outgoing
 
@@ -198,3 +185,55 @@ calcdisplaySummary(account1.movements);
 // }
 
 // calcdisplayInterst(account4)
+
+const firstWithdrawl = movements.find(mov => mov < 0) // unlike the filter method that retuns a new array the find method will only return the first element that fulfills the condition
+
+console.log(movements)
+console.log(firstWithdrawl);
+
+const account = accounts.find(acc => acc.owner === 'Steven Ndegwa');
+
+console.log(account);
+
+const findAccount = function () {
+
+	for (const account of accounts) {
+
+		if (account.owner === 'Steven Ndegwa') {
+			console.log(account)
+		}
+	}
+
+}
+
+findAccount(); 
+
+//Even Handlers 
+
+let currentAccount;
+
+btnLogin.addEventListener('click', (e) => {
+	//Prevents form from subbmitting
+	e.preventDefault()
+	
+	currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+
+	console.log(currentAccount)
+
+	if (currentAccount?.pin === Number(inputLoginPin.value)) {
+		console.log(`Hello Mr.${currentAccount.owner.split(' ')[1]}, welcome to SUbsidian Bank`);
+
+		// DISPLAY UI AND WELCOME MESSAGE
+		labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(' ')[0]}`;
+
+		// CLEAR INPUT FIELDS
+		inputLoginUsername.value = inputLoginPin.value = ''
+		// DISPLAY MOVEMENTS
+		containerApp.style.opacity = 100
+		displayMovements(currentAccount.movements);
+		// DISPLAY BALANCE
+		calcPrintBalance(currentAccount.movements);
+		//  DISPLAY SUMMARY
+		calcdisplaySummary(currentAccount.movements); 
+	}
+})
