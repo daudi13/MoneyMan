@@ -128,9 +128,11 @@ const accBalance = movements.reduce((acc, currentValue) => {
 
 console.log(accBalance)
 
-const calcPrintBalance = function (movements) {
-    labelBalance.textContent = `$${movements.reduce((acc, cur) => acc + cur, 0)
-    } `
+const calcPrintBalance = function (acc) {
+
+	acc.balance = acc.movements.reduce((acc, cur) => acc + cur, 0);
+    labelBalance.textContent = `$${acc.balance}`
+    
 }
 
 
@@ -234,7 +236,7 @@ btnLogin.addEventListener('click', (e) => {
 		containerApp.style.opacity = 100
 		displayMovements(currentAccount.movements);
 		// DISPLAY BALANCE
-		calcPrintBalance(currentAccount.movements);
+		calcPrintBalance(currentAccount);
 		//  DISPLAY SUMMARY
 		calcdisplaySummary(currentAccount); 
 	}
@@ -243,5 +245,36 @@ btnLogin.addEventListener('click', (e) => {
 btnTransfer.addEventListener('click', function (e) {
 	e.preventDefault();
 	const amount = Number(inputTransferAmount.value);
-	const receiverAcc = accounts.find( acc => acc.userName === inputTransferTo.value)
+	const receiverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
+	inputTransferTo.value = inputTransferAmount.value = '';
+
+	if (amount > 0 && receiverAcc && amount <= currentAccount.balance && receiverAcc?.username !== currentAccount.username) {
+		// Doing the transfer
+		currentAccount.movements.push(-amount);
+		receiverAcc.movements.push(amount);
+		containerApp.style.opacity = 100;
+		displayMovements(currentAccount.movements);
+		calcPrintBalance(currentAccount);
+		calcdisplaySummary(currentAccount);
+	}
+});
+
+btnClose.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+		const index = accounts.findIndex(acc => acc.username === currentAccount.username);
+		console.log(index)
+
+		// delete the account
+		accounts.splice(index, 1);
+		console.log(accounts)
+
+		//hide the ui
+		containerApp.style.opacity = 0
+
+		// hide the welcome message
+
+		labelWelcome.textContent = 'login to get started'
+	}
 })
