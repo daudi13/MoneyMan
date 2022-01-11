@@ -167,7 +167,7 @@ const calcdisplaySummary = function (acc) {
 }
 
 
-// //display the outgoing
+// //display the outgoing 
 
 // const calcdisplayOut = function (movements) {
 // 	const outcomes = movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
@@ -238,4 +238,10 @@ btnLogin.addEventListener('click', (e) => {
 		//  DISPLAY SUMMARY
 		calcdisplaySummary(currentAccount); 
 	}
+})
+
+btnTransfer.addEventListener('click', function (e) {
+	e.preventDefault();
+	const amount = Number(inputTransferAmount.value);
+	const receiverAcc = accounts.find( acc => acc.userName === inputTransferTo.value)
 })
