@@ -151,18 +151,18 @@ const bankBalnceUSD = function (accs) {
 
 //display the incomes 
 
-const calcdisplaySummary = function (movements) {
+const calcdisplaySummary = function (acc) {
 	//income display
-	const incomes = movements.filter(mov => mov > 0).reduce((acc, val) => acc + val, 0);
+	const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, val) => acc + val, 0);
 	labelSumIn.textContent = `${incomes}€`;
 
 	//outcome display 
-	const outcomes = movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
+	const outcomes = acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
 	labelSumOut.textContent = `${Math.abs(outcomes)}€`;
 
 	//interest 
 
-	const interest = movements.filter(mov => mov > 0).map(mov => mov * 1.2/100).filter(interest => interest >= 1).reduce((acc, val) => acc + val, 0);
+	const interest = acc.movements.filter(mov => mov > 0).map(mov => mov * acc.interest/100).filter(interest => interest >= 1).reduce((acc, val) => acc + val, 0);
 	labelSumInterest.textContent = `${interest}`
 }
 
@@ -228,12 +228,14 @@ btnLogin.addEventListener('click', (e) => {
 
 		// CLEAR INPUT FIELDS
 		inputLoginUsername.value = inputLoginPin.value = ''
+		inputLoginPin.blur();
+		
 		// DISPLAY MOVEMENTS
 		containerApp.style.opacity = 100
 		displayMovements(currentAccount.movements);
 		// DISPLAY BALANCE
 		calcPrintBalance(currentAccount.movements);
 		//  DISPLAY SUMMARY
-		calcdisplaySummary(currentAccount.movements); 
+		calcdisplaySummary(currentAccount); 
 	}
 })
