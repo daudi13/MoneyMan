@@ -202,18 +202,27 @@ btnTransfer.addEventListener('click', function (e) {
 //bank rule: the bank only grants a loan if there is a deposit with at least 10% of the requested loan amount.
 
 btnLoan.addEventListener('click', function (e) {
-    e.preventDefault()
+	e.preventDefault()
+	const amount = Number(inputLoanAmount.value);
+	console.log(amount);
+
+	if (amount && amount > 0 && amount === currentAccount.movement.some(mov => mov >= amount * 0.1)) {
+		currentAccount.movements.push(amount)
+
+		updateUI(currentAccount);
+	}
+	inputLoanAmount.value = '';
 });
 
 btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (
+    if (
     inputCloseUsername.value === currentAccount.username &&
     Number(inputClosePin.value) === currentAccount.pin
-  ) {
+    ) {
     const index = accounts.findIndex(
-      acc => acc.username === currentAccount.username
+        acc => acc.username === currentAccount.username
     );
     console.log(index);
 
@@ -227,5 +236,5 @@ btnClose.addEventListener('click', function (e) {
     // hide the welcome message
 
     labelWelcome.textContent = 'login to get started';
-  }
+    }
 });
