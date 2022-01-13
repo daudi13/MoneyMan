@@ -121,13 +121,6 @@ const createWithdrawals = function(accs) {
 //USING THE REDUCE METHOD(snowball)
 //addition
 
-const accBalance = movements.reduce((acc, currentValue) => {
-    return acc + currentValue;
-}, 0); // the 0 indicates the value of the initial value
-
-
-console.log(accBalance)
-
 const calcPrintBalance = function (acc) {
 
 	acc.balance = acc.movements.reduce((acc, cur) => acc + cur, 0);
@@ -135,20 +128,6 @@ const calcPrintBalance = function (acc) {
     
 }
 
-
-
-//getting the maximum value 
-
-const maxVal = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0])
-
-console.log(maxVal)
-
-//getting the bank balance in usd
-
-
-const bankBalnceUSD = function (accs) {
-	accs.forEach(acc => acc.bankBalnceUSD = acc.movements.map(mov => mov * eurUSD).filter(mov => mov > 0).reduce((acc, val) => acc + val), 0);
-}
 
 
 //display the incomes 
@@ -168,47 +147,16 @@ const calcdisplaySummary = function (acc) {
 	labelSumInterest.textContent = `${interest}`
 }
 
-
-// //display the outgoing 
-
-// const calcdisplayOut = function (movements) {
-// 	const outcomes = movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
-// 	labelSumOut.textContent = `${outcomes}€`;
-// }
-
-// calcdisplayOut(account1.movements);
-
-// //display the interest 
-
-// const calcdisplayInterst = function (acc) {
-// 	const interest = acc.movements.filter(mov => mov > 0).reduce((acc, val) => acc + val,0) - acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0) * acc.interestRate;
-
-// 	labelSumInterest.textContent = `${interest}€`;
-// }
-
-// calcdisplayInterst(account4)
-
 const firstWithdrawl = movements.find(mov => mov < 0) // unlike the filter method that retuns a new array the find method will only return the first element that fulfills the condition
 
-console.log(movements)
-console.log(firstWithdrawl);
+// update the UI
 
-const account = accounts.find(acc => acc.owner === 'Steven Ndegwa');
 
-console.log(account);
-
-const findAccount = function () {
-
-	for (const account of accounts) {
-
-		if (account.owner === 'Steven Ndegwa') {
-			console.log(account)
-		}
-	}
-
+const updateUI = function (acc) {
+	displayMovements(acc.movements);
+	calcPrintBalance(acc);
+	calcdisplaySummary(acc);
 }
-
-findAccount(); 
 
 //Even Handlers 
 
@@ -231,14 +179,8 @@ btnLogin.addEventListener('click', (e) => {
 		// CLEAR INPUT FIELDS
 		inputLoginUsername.value = inputLoginPin.value = ''
 		inputLoginPin.blur();
-		
-		// DISPLAY MOVEMENTS
-		containerApp.style.opacity = 100
-		displayMovements(currentAccount.movements);
-		// DISPLAY BALANCE
-		calcPrintBalance(currentAccount);
-		//  DISPLAY SUMMARY
-		calcdisplaySummary(currentAccount); 
+		containerApp.style.opacity = 100;
+		updateUI(currentAccount);
 	}
 })
 
@@ -253,28 +195,37 @@ btnTransfer.addEventListener('click', function (e) {
 		currentAccount.movements.push(-amount);
 		receiverAcc.movements.push(amount);
 		containerApp.style.opacity = 100;
-		displayMovements(currentAccount.movements);
-		calcPrintBalance(currentAccount);
-		calcdisplaySummary(currentAccount);
+		updateUI(currentAccount)
 	}
 });
+// requesting for a loan 
+//bank rule: the bank only grants a loan if there is a deposit with at least 10% of the requested loan amount.
 
-btnClose.addEventListener('click', (e) => {
-	e.preventDefault();
+btnLoan.addEventListener('click', function (e) {
+    e.preventDefault()
+});
 
-	if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
-		const index = accounts.findIndex(acc => acc.username === currentAccount.username);
-		console.log(index)
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
 
-		// delete the account
-		accounts.splice(index, 1);
-		console.log(accounts)
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
 
-		//hide the ui
-		containerApp.style.opacity = 0
+    // delete the account
+    accounts.splice(index, 1);
+    console.log(accounts);
 
-		// hide the welcome message
+    //hide the ui
+    containerApp.style.opacity = 0;
 
-		labelWelcome.textContent = 'login to get started'
-	}
-})
+    // hide the welcome message
+
+    labelWelcome.textContent = 'login to get started';
+  }
+});
