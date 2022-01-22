@@ -30,10 +30,10 @@ Feel free to chech the [issues pages](../../issues/).
 
 > I would like to give special thanks to @jonasschmedtmann
 
+## show your support 
+
+Give a star if you like this project
+
 ## license 
 
 This project is [MIT](./MIT.md) licensed.
-
-## show your support 
-
-
