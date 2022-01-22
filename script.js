@@ -68,7 +68,7 @@ const displayMovements = function (movements, sort = false) {
         const htmlTemplate = `
         <div class="movements__row">
                 <div class="movements__type movements__type--${movementType}">${i + 1} ${movementType}</div>
-                <div class="movements__value">${movement}</div>
+                <div class="movements__value">${movement}$</div>
         </div>`;
         containerMovements.insertAdjacentHTML('afterbegin',   htmlTemplate)
     })
@@ -245,4 +245,14 @@ btnSort.addEventListener('click',(e) => {
 	e.preventDefault();
 	displayMovements(currentAccount.movements, !sorted);
 	sorted = !sorted;
+})
+
+const movementsUi = Array.from(document.querySelectorAll('.movements__value'));
+
+console.log(movementsUi);
+
+labelBalance.addEventListener('click', () => {
+	const movementsUI = Array.from(document.querySelectorAll('.movements__value'), (el) => el.textContent.replace('$', ''));
+
+	const total = movementsUI.reduce((acc, cur) => acc + cur, 0)
 })
