@@ -85,15 +85,24 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (acc, sort = false) {
 	containerMovements.innerHTML = ' ';
 	
-	const movs = sort ? movements.slice().sort((a, b) => a - b) :  movements 
+	const movs = sort ? acc.movements.slice().sort((a, b) => a - b) :  acc.movements 
     movs.forEach((movement, i) => {
-        const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
+			const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
+			const date = new Date(acc.movementsDates[i]);
+			const day = `${date.getDate()}`.padStart(2, 0);
+      const month = `${date.getMonth() + 1}`.padStart(2, 0);
+			const year = date.getFullYear();
+			const displayDate = `${day}/${month}/${year}`;
+
         const htmlTemplate = `
         <div class="movements__row">
-                <div class="movements__type movements__type--${movementType}">${i + 1} ${movementType}</div>
+                <div class="movements__type movements__type--${movementType}">${
+          i + 1
+        } ${movementType}</div>
+								<div class="movements__date">${displayDate}</div>
                 <div class="movements__value">${movement}$</div>
         </div>`;
         containerMovements.insertAdjacentHTML('afterbegin',   htmlTemplate)
@@ -176,7 +185,7 @@ const firstWithdrawl = movements.find(mov => mov < 0) // unlike the filter metho
 
 
 const updateUI = function (acc) {
-	displayMovements(acc.movements);
+	displayMovements(acc);
 	calcPrintBalance(acc);
 	calcdisplaySummary(acc);
 }
@@ -187,21 +196,12 @@ let currentAccount;
 
 // Fake always logged in
 
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
-
-const now = new Date();
-const day = `${now.getDate()}`.padStart(2, 0);
-const month = `${now.getMonth() + 1}`.padStart(2, 0);
-const year = now.getFullYear();
-const hour = `${now.getHours()}`.padStart(2, 0);
-const minutes = `${now.getMinutes()}`.padStart(2, 0);
-
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes}`
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 btnLogin.addEventListener('click', (e) => {
-	//Prevents form from subbmitting
+	//Prevents form from submitting
 	e.preventDefault()
 	
 	currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
@@ -219,6 +219,15 @@ btnLogin.addEventListener('click', (e) => {
 		inputLoginPin.blur();
 		containerApp.style.opacity = 100;
 		updateUI(currentAccount);
+
+		const now = new Date();
+    const day = `${now.getDate()}`.padStart(2, 0);
+    const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    const year = now.getFullYear();
+    const hour = `${now.getHours()}`.padStart(2, 0);
+    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes}`;
 	}
 })
 
