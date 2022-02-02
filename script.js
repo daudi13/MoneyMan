@@ -283,3 +283,16 @@ labelBalance.addEventListener('click', () => {
 
 	console.log(total)
 })
+
+const newOwner = 'david 0uma';
+
+console.log(newOwner.split(' ').map(name => name.split('')));
+
+
+labelBalance.addEventListener('click', () => {
+	const xArr = Array.from(document.querySelectorAll('.movements__row'), (row, i) => {
+		if( i % 2 === 0) row.style.backgroundColor = 'blue'
+	})
+})
+
+console.log(new Date(account1.movementsDates[0]));
