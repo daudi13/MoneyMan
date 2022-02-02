@@ -186,6 +186,12 @@ const updateUI = function (acc) {
 
 let currentAccount;
 
+// Fake always logged in
+
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
 btnLogin.addEventListener('click', (e) => {
 	//Prevents form from subbmitting
 	e.preventDefault()
