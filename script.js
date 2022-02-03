@@ -9,17 +9,17 @@ const account1 = {
   interestRate: 1.2, // %
 	pin: 1111,
   movementsDates: [
-    '2019-11-18T21:31:17.178Z',
-    '2019-12-23T07:42:02.383Z',
-    '2020-01-28T09:15:04.904Z',
-    '2020-04-01T10:17:24.185Z',
-    '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2021-11-18T21:31:17.178Z',
+    '2021-12-23T07:42:02.383Z',
+    '2022-01-01T10:17:24.185Z',
+    '2022-01-08T14:11:59.604Z',
+    '2022-01-28T09:15:04.904Z',
+    '2022-02-01T17:01:17.194Z',
+    '2022-02-01T23:36:17.929Z',
+    '2022-02-02T10:51:36.790Z',
   ],
   currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  locale: 'sw-KE',
 };
 
 const account2 = {
@@ -85,13 +85,16 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const dateformatter = function(anyDate) {
+const dateformatter = function(anyDate, locale) {
 	const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
-	const month = `${anyDate.getMonth() + 1}`.padStart(2, 0);
-  const day = `${anyDate.getDate()}`.padStart(2, 0);
-	const year = anyDate.getFullYear();
+	const pastDays = calcDaysPassed(new Date(), anyDate);
 
-	return `${day}/${month}/${year}`
+	if (pastDays === 0) return `Today`;
+	if (pastDays === 1) return 'Yesterday';
+	if (pastDays <= 7) return `${pastDays} days ago`;
+	else {
+		return new Intl.DateTimeFormat(locale).format(anyDate);
+	}
 }
 
 const displayMovements = function (acc, sort = false) {
@@ -102,7 +105,7 @@ const displayMovements = function (acc, sort = false) {
 		const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
 		
 		const date = new Date(acc.movementsDates[i]);
-			const displayDate = dateformatter(date);
+			const displayDate = dateformatter(date, acc.locale);
 
         const htmlTemplate = `
         <div class="movements__row">
@@ -224,13 +227,17 @@ btnLogin.addEventListener('click', (e) => {
     updateUI(currentAccount);
 
 		const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-		const minutes = `${now.getMinutes()}`.padStart(2, 0);
+		const dateOptions = {
+			hour: 'numeric',
+			minute: '2-digit',
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric', 
+			weekday: 'short'
+		}
+		const locale = navigator.language;
 
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes}`;
+		labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, dateOptions).format(now);
 	}
 })
 
