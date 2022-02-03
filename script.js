@@ -85,17 +85,24 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const dateformatter = function(anyDate) {
+	const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+	const month = `${anyDate.getMonth() + 1}`.padStart(2, 0);
+  const day = `${anyDate.getDate()}`.padStart(2, 0);
+	const year = anyDate.getFullYear();
+
+	return `${day}/${month}/${year}`
+}
+
 const displayMovements = function (acc, sort = false) {
 	containerMovements.innerHTML = ' ';
 	
 	const movs = sort ? acc.movements.slice().sort((a, b) => a - b) :  acc.movements 
-    movs.forEach((movement, i) => {
-			const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
-			const date = new Date(acc.movementsDates[i]);
-			const day = `${date.getDate()}`.padStart(2, 0);
-      const month = `${date.getMonth() + 1}`.padStart(2, 0);
-			const year = date.getFullYear();
-			const displayDate = `${day}/${month}/${year}`;
+	movs.forEach((movement, i) => {
+		const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
+		
+		const date = new Date(acc.movementsDates[i]);
+			const displayDate = dateformatter(date);
 
         const htmlTemplate = `
         <div class="movements__row">
@@ -194,12 +201,6 @@ const updateUI = function (acc) {
 
 let currentAccount;
 
-// Fake always logged in
-
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = 100;
-
 btnLogin.addEventListener('click', (e) => {
 	//Prevents form from submitting
 	e.preventDefault()
@@ -212,20 +213,22 @@ btnLogin.addEventListener('click', (e) => {
 		console.log(`Hello Mr.${currentAccount.owner.split(' ')[1]}, welcome to SUbsidian Bank`);
 
 		// DISPLAY UI AND WELCOME MESSAGE
-		labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(' ')[0]}`;
+		labelWelcome.textContent = `Welcome back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
 
-		// CLEAR INPUT FIELDS
-		inputLoginUsername.value = inputLoginPin.value = ''
-		inputLoginPin.blur();
-		containerApp.style.opacity = 100;
-		updateUI(currentAccount);
+    // CLEAR INPUT FIELDS
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    containerApp.style.opacity = 100;
+    updateUI(currentAccount);
 
 		const now = new Date();
     const day = `${now.getDate()}`.padStart(2, 0);
     const month = `${now.getMonth() + 1}`.padStart(2, 0);
     const year = now.getFullYear();
     const hour = `${now.getHours()}`.padStart(2, 0);
-    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+		const minutes = `${now.getMinutes()}`.padStart(2, 0);
 
     labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes}`;
 	}
@@ -240,7 +243,9 @@ btnTransfer.addEventListener('click', function (e) {
 	if (amount > 0 && receiverAcc && amount <= currentAccount.balance && receiverAcc?.username !== currentAccount.username) {
 		// Doing the transfer
 		currentAccount.movements.push(-amount);
+		currentAccount.movementsDates.push(new Date().toISOString())
 		receiverAcc.movements.push(amount);
+		receiverAcc.movementsDates.push(new Date().toISOString());
 		containerApp.style.opacity = 100;
 		updateUI(currentAccount)
 	}
@@ -254,9 +259,12 @@ btnLoan.addEventListener('click', function (e) {
 	console.log(amount);
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-		currentAccount.movements.push(amount)
+		currentAccount.movements.push(amount);
 
+		//update the date section
+		currentAccount.movementsDates.push(new Date().toISOString())
 		updateUI(currentAccount);
+		console.log(currentAccount);
 	}
 	inputLoanAmount.value = '';
 });
