@@ -18,7 +18,7 @@ const account1 = {
     '2022-02-01T23:36:17.929Z',
     '2022-02-02T10:51:36.790Z',
   ],
-  currency: 'EUR',
+  currency: 'KSH',
   locale: 'sw-KE',
 };
 
@@ -97,6 +97,7 @@ const dateformatter = function(anyDate, locale) {
 	}
 }
 
+
 const displayMovements = function (acc, sort = false) {
 	containerMovements.innerHTML = ' ';
 	
@@ -105,7 +106,11 @@ const displayMovements = function (acc, sort = false) {
 		const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
 		
 		const date = new Date(acc.movementsDates[i]);
-			const displayDate = dateformatter(date, acc.locale);
+		const displayDate = dateformatter(date, acc.locale);
+		const formattedMov = new Intl.NumberFormat(acc.locale, {
+			style: 'currency',
+			currency: acc.currency,
+		}).format(movement)
 
         const htmlTemplate = `
         <div class="movements__row">
@@ -113,7 +118,7 @@ const displayMovements = function (acc, sort = false) {
           i + 1
         } ${movementType}</div>
 								<div class="movements__date">${displayDate}</div>
-                <div class="movements__value">${movement}$</div>
+                <div class="movements__value">${formattedMov}</div>
         </div>`;
         containerMovements.insertAdjacentHTML('afterbegin',   htmlTemplate)
     })
