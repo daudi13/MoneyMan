@@ -96,7 +96,12 @@ const dateformatter = function(anyDate, locale) {
 		return new Intl.DateTimeFormat(locale).format(anyDate);
 	}
 }
-
+function formartMovements(value, locale, currency) {
+	return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+	}).format(value);
+}
 
 const displayMovements = function (acc, sort = false) {
 	containerMovements.innerHTML = ' ';
@@ -104,21 +109,15 @@ const displayMovements = function (acc, sort = false) {
 	const movs = sort ? acc.movements.slice().sort((a, b) => a - b) :  acc.movements 
 	movs.forEach((movement, i) => {
 		const movementType = movement > 0 ? 'deposit' : 'withdrawal ';
-		
 		const date = new Date(acc.movementsDates[i]);
 		const displayDate = dateformatter(date, acc.locale);
-		const formattedMov = new Intl.NumberFormat(acc.locale, {
-			style: 'currency',
-			currency: acc.currency,
-		}).format(movement)
-
         const htmlTemplate = `
         <div class="movements__row">
                 <div class="movements__type movements__type--${movementType}">${
           i + 1
         } ${movementType}</div>
 								<div class="movements__date">${displayDate}</div>
-                <div class="movements__value">${formattedMov}</div>
+                <div class="movements__value">${formartMovements(movement, acc.locale, acc.currency)}</div>
         </div>`;
         containerMovements.insertAdjacentHTML('afterbegin',   htmlTemplate)
     })
@@ -173,7 +172,7 @@ const createWithdrawals = function(accs) {
 const calcPrintBalance = function (acc) {
 
 	acc.balance = acc.movements.reduce((acc, cur) => acc + cur, 0);
-    labelBalance.textContent = `$${acc.balance}`
+    labelBalance.textContent = `${formartMovements(acc.balance, acc.locale, acc.currency)}`
 }
 
 
