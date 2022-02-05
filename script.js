@@ -18,8 +18,8 @@ const account1 = {
     '2022-02-01T23:36:17.929Z',
     '2022-02-02T10:51:36.790Z',
   ],
-  currency: 'KSH',
-  locale: 'sw-KE',
+  currency: 'EUR',
+  locale: 'de-DE',
 };
 
 const account2 = {
@@ -181,16 +181,22 @@ const calcPrintBalance = function (acc) {
 const calcdisplaySummary = function (acc) {
 	//income display
 	const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, val) => acc + val, 0);
-	labelSumIn.textContent = `${incomes}€`;
+	labelSumIn.textContent = `${formartMovements(incomes, acc.locale, acc.currency)}`;
 
 	//outcome display 
 	const outcomes = acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
-	labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+	labelSumOut.textContent = `${Math.abs(
+    formartMovements(outcomes, acc.locale, acc.currency)
+  )}€`;
 
 	//interest 
 
 	const interest = acc.movements.filter(mov => mov > 0).map(mov => mov * acc.interest/100).filter(interest => interest >= 1).reduce((acc, val) => acc + val, 0);
-	labelSumInterest.textContent = `${interest}`
+	labelSumInterest.textContent = `${formartMovements(
+    interest,
+    acc.locale,
+    acc.currency
+  )}`;
 }
 
 const firstWithdrawl = movements.find(mov => mov < 0) // unlike the filter method that retuns a new array the find method will only return the first element that fulfills the condition
