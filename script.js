@@ -276,12 +276,16 @@ btnLoan.addEventListener('click', function (e) {
 	console.log(amount);
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+
+		const loanAccepted = function() {
 		currentAccount.movements.push(amount);
 
 		//update the date section
 		currentAccount.movementsDates.push(new Date().toISOString())
 		updateUI(currentAccount);
-		console.log(currentAccount);
+		}
+
+		setTimeout(loanAccepted, 3000)
 	}
 	inputLoanAmount.value = '';
 });
