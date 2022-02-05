@@ -184,10 +184,8 @@ const calcdisplaySummary = function (acc) {
 	labelSumIn.textContent = `${formartMovements(incomes, acc.locale, acc.currency)}`;
 
 	//outcome display 
-	const outcomes = acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0);
-	labelSumOut.textContent = `${Math.abs(
-    formartMovements(outcomes, acc.locale, acc.currency)
-  )}€`;
+	const outcomes = Math.abs(acc.movements.filter(mov => mov < 0).reduce((acc, val) => acc + val, 0));        
+	labelSumOut.textContent = `${formartMovements(outcomes, acc.locale, acc.currency)}`;
 
 	//interest 
 
