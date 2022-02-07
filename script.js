@@ -208,9 +208,36 @@ const updateUI = function (acc) {
 	calcdisplaySummary(acc);
 }
 
-//Even Handlers 
+const startTimer = function () {
+	// in each call, print the remaining time to ui
+	const tick = function () {
+		
+		let min = `${Math.trunc(startTime / 60)}`.padStart(2, 0);
+		let seconds = `${startTime % 60}`.padStart(2, 0);
 
-let currentAccount;
+		// in each call, print the remaining time to UI
+		labelTimer.textContent = `${min} : ${seconds}`;
+		// 
+		// when 0 seconds, stop timer and log out user
+		
+		if (startTime === 0) {
+			clearInterval(tick)
+			labelWelcome.textContent = `Log in to get started`
+			containerApp.style.opacity = 0;
+		}
+		startTime--;  
+	}
+	
+	let startTime = 100;
+	tick();
+	const timer = setInterval(tick, 1000)
+	return timer;
+}
+
+
+//Even Handlers 
+let currentAccount, timer;
+
 
 btnLogin.addEventListener('click', (e) => {
 	//Prevents form from submitting
@@ -218,22 +245,25 @@ btnLogin.addEventListener('click', (e) => {
 	
 	currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
 
-	console.log(currentAccount)
-
+	console.log(currentAccount);
+	
 	if (currentAccount?.pin === +(inputLoginPin.value)) {
 		console.log(`Hello Mr.${currentAccount.owner.split(' ')[1]}, welcome to SUbsidian Bank`);
-
+		
 		// DISPLAY UI AND WELCOME MESSAGE
 		labelWelcome.textContent = `Welcome back ${
-      currentAccount.owner.split(' ')[0]
+			currentAccount.owner.split(' ')[0]
     }`;
-
+		
     // CLEAR INPUT FIELDS
     inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
+		inputLoginPin.blur();
+		
+		if (timer) clearInterval(timer);
+		timer = startTimer();
     containerApp.style.opacity = 100;
     updateUI(currentAccount);
-
+		
 		const now = new Date();
 		const dateOptions = {
 			hour: 'numeric',
@@ -262,7 +292,9 @@ btnTransfer.addEventListener('click', function (e) {
 		receiverAcc.movements.push(amount);
 		receiverAcc.movementsDates.push(new Date().toISOString());
 		containerApp.style.opacity = 100;
-		updateUI(currentAccount)
+		updateUI(currentAccount);
+		clearInterval(timer);
+    timer = startTimer();
 	}
 });
 // requesting for a loan 
@@ -280,7 +312,9 @@ btnLoan.addEventListener('click', function (e) {
 
 		//update the date section
 		currentAccount.movementsDates.push(new Date().toISOString())
-		updateUI(currentAccount);
+			updateUI(currentAccount);
+			clearInterval(timer);
+			timer = startTimer();
 		}
 
 		setTimeout(loanAccepted, 3000)
@@ -341,8 +375,12 @@ console.log(newOwner.split(' ').map(name => name.split('')));
 
 labelBalance.addEventListener('click', () => {
 	const xArr = Array.from(document.querySelectorAll('.movements__row'), (row, i) => {
-		if( i % 2 === 0) row.style.backgroundColor = 'blue'
+		if (i % 2 === 0) row.style.backgroundColor = 'blue'; 
 	})
 })
 
 console.log(new Date(account1.movementsDates[0]));
+
+const myName = 'David Ouma';
+
+console.log(myName.split(' ').map(name => name[0]).join(''))
